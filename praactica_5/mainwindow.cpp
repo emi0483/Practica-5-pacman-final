@@ -2,37 +2,46 @@
 #include "mainwindow.h"
 
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+MainWindow::MainWindow(QWidget *parent) //define el constructor de la case
+    : QMainWindow(parent) // Llama al constructor de la clase y entrega al parent como argumento
     , ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
-    escena = new QGraphicsScene;
-    pac = new QGraphicsPixmapItem;
-    mapa = new QGraphicsPixmapItem;
-    timer = new QTimer;
+    ui->setupUi(this); //Inicializa el archivo de diseño 
+    escena = new QGraphicsScene; // Se crea una instancia de la clase QGraphicsScene llamada escena. 
+    //QGraphicsScene proporciona una superficie 2D en la que se pueden colocar objetos gráficos.
+    pac = new QGraphicsPixmapItem; // Hace lo mismo para el pacman
+    mapa = new QGraphicsPixmapItem; // hace lo mismo para el mapa
+    timer = new QTimer; //Se crean dos instancias de la clase QTimer llamadas timer y timer2. Los objetos QTimer 
+    //se utilizan para generar eventos periódicos y se utilizarán para realizar tareas con regularidad en la aplicación
     timer2 = new QTimer;
     timer->stop();
     timer2->stop();
     connect(timer,SIGNAL(timeout()),this,SLOT(refrescar()));
     connect(timer2,SIGNAL(timeout()),this,SLOT(mover_pac()));
     connect(timer2,SIGNAL(timeout()),this,SLOT(mover_fan1()));
+    //Las  tres lineas anteriores Estas líneas establecen las conexiones de señales y ranuras. Cuando los temporizadores timer y 
+    //timer2 alcanzan el tiempo de espera especificado, se emitirá la señal timeout(), que está conectada a las ranuras refrescar(),
+    // mover_pac() y mover_fan1() respectivamente.
+        
     timer->start(40);
     timer2->start(20);
+    //Generar eventos despues de ciertos intervalos de tiempo
+        
     ui->graphicsView->setScene(escena);
     pac->setPos(297,436);
     pac->setPixmap(QPixmap(":/new/prefix1/imagenes/pac_man_1.png").scaled(30,30));
+
     escena->addItem(pac);
     escena->setSceneRect(0,0,624,612);
     crear_fantas();
     mapa->setPos(0,0);
-    mapa->setPixmap(QPixmap(":/new/prefix1/imagenes/mapa.png").scaled(624,612));
+    mapa->setPixmap(QPixmap(":/new/prefix1/imagenes/mapa.png").scaled(624,612)); //OBjeto en las cordenadas
     escena->addItem(mapa);
     cre_par();
     cre_mon();
 }
 
-MainWindow::~MainWindow()
+MainWindow::~MainWindow() //destructor de la clase mainwindow
 {
     delete timer;
     delete escena;
@@ -45,26 +54,27 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::mover_pac(){
+void MainWindow::mover_pac(){ //Funcion de la clase main window y se encarga de mover el objeto grafico en la escena
     switch(dest){
-    case 1:
+    case 1: //si dest es igual a 1 se mueve hacia la derecha en incrementos de 3 píxeles si no hay colisión (choque) en esa dirección.
         if(choque(dest,pac))
-            pac->setX(pac->x()+3);
+            pac->setX(pac->x()+3); 
         break;
-    case 2:
+    case 2://Si dest es igual a 2, el pac se mueve hacia la izquierda en decrementos de 3 píxeles si no hay colisión en esa dirección.
         if(choque(dest,pac))
             pac->setX(pac->x()-3);
         break;
-    case 3:
+    case 3: //Si dest es igual a 3, el pac se mueve hacia arriba en decrementos de 3 píxeles si no hay colisión en esa dirección.
         if(choque(dest,pac))
             pac->setY(pac->y()-3);
         break;
-    case 4:
+    case 4: //Si dest es igual a 4, el pac se mueve hacia abajo en incrementos de 3 píxeles si no hay colisión en esa dirección.
         if(choque(dest,pac))
             pac->setY(pac->y()+3);
         break;
     default:
         break;
+
     }
     ui->label_2->setNum(pac->x());
     ui->label_4->setNum(pac->y());
@@ -77,32 +87,39 @@ void MainWindow::mover_pac(){
         }
     }
     ui->label_6->setNum(score);
+//Luego, la función actualiza las etiquetas de label_2 y label_4 con las nuevas coordenadas x e y del pac. Si la posición x del 
+//pac es igual a -50, se establece en 600, y si es mayor que 600, se establece en -50. Esto asegura que el pac se mueva a través 
+//de los bordes de la escena. Luego, la función verifica si el pac ha colisionado con alguna de las monedas almacenadas en el 
+//contenedor monedas. Si ocurre una colisión, se elimina la moneda del contenedor y se incrementa la puntuación score. //Finalmente, la etiqueta label_6 se actualiza con el nuevo valor de score.
 }
 
-void MainWindow::keyPressEvent(QKeyEvent *event){
+void MainWindow::keyPressEvent(QKeyEvent *event){ //Encargada de manipular los controles y su funcionamiento
     pac->setTransformOriginPoint(15,15);
-    if(event->key()==Qt::Key_D){
+    if(event->key()==Qt::Key_D){ //Orienta hacia la derecha
         pac->setRotation(0);
         dest=1;
     }
-    else if(event->key()==Qt::Key_A){
+    else if(event->key()==Qt::Key_A){ //Orienta hacia la derecha
         pac->setRotation(180);
         dest=2;
     }
-    else if(event->key()==Qt::Key_W){
+    else if(event->key()==Qt::Key_S){ //orienta arriba 
         pac->setRotation(270);
         dest=3;
     }
-    else if(event->key()==Qt::Key_S){
+    else if(event->key()==Qt::Key_Z){ //orienta abajo
         pac->setRotation(90);
         dest=4;
     }
-    else if(event->key()==Qt::Key_Space)
+    else if(event->key()==Qt::Key_Space) //NO hay movimiento en ninguna direccion
         dest=0;
 }
 
-void MainWindow::refrescar(){
-    if(estado==1){
+void MainWindow::refrescar(){ //Cambair las iamgenes de los objetos en estado acutla
+    if(estado==1){ 
+//Si estado es igual a 1, se establecen las imágenes de pac, red, pink, blue y yell con los archivos de imagen correspondientes 
+//a la segunda variante, utilizando la ruta ":/new/prefix1/imagenes/..." y se escala a un tamaño de 30x30 píxeles. Luego, se 
+//cambia el valor de estado a 2.
         pac->setPixmap(QPixmap(":/new/prefix1/imagenes/pac_man_2.png").scaled(30,30));
         red->setPixmap(QPixmap(":/new/prefix1/imagenes/fanroj_1.png").scaled(30,30));
         pink->setPixmap(QPixmap(":/new/prefix1/imagenes/fanros_1.png").scaled(30,30));
@@ -110,6 +127,9 @@ void MainWindow::refrescar(){
         yell->setPixmap(QPixmap(":/new/prefix1/imagenes/fanama_1.png").scaled(30,30));
         estado=2;}
     else if (estado==2){
+//Si estado es igual a 2, se establecen las imágenes de los objetos gráficos con los archivos de imagen correspondientes a la 
+//tercera variante, utilizando la ruta ":/new/prefix1/imagenes/..." y se escala a un tamaño de 30x30 píxeles. 
+//Luego, se cambia el valor de estado a 3.
         pac->setPixmap(QPixmap(":/new/prefix1/imagenes/pac_man_3.png").scaled(30,30));
         red->setPixmap(QPixmap(":/new/prefix1/imagenes/fanroj_2.png").scaled(30,30));
         pink->setPixmap(QPixmap(":/new/prefix1/imagenes/fanros_2.png").scaled(30,30));
@@ -117,18 +137,25 @@ void MainWindow::refrescar(){
         yell->setPixmap(QPixmap(":/new/prefix1/imagenes/fanama_2.png").scaled(30,30));
         estado=3;}
     else{
+//Si estado no es igual a 1 o 2, se establecen las imágenes de los objetos gráficos con los archivos de imagen
+// correspondientes a la primera variante, utilizando la ruta ":/new/prefix1/imagenes/..." y se escala a un tamaño de 30x30 píxeles. 
+//Luego, se cambia el valor de estado a 1.
         pac->setPixmap(QPixmap(":/new/prefix1/imagenes/pac_man_1.png").scaled(30,30));
         estado=1;}
 }
-bool MainWindow::choque(short dest,QGraphicsPixmapItem *obj){
+bool MainWindow::choque(short dest,QGraphicsPixmapItem *obj){ //Verifica si hay una colision entre un objeto grafico y los limites de la 
+//escena con los objetos de la lista "pare2"
     bool ban=1;
     int spos[2];
     switch(dest){
-    case 1:
+    case 1: //Si spos[0] es menor que 24, mayor que 570, menor que 24 o mayor que 560, significa que el objeto obj ha chocado con 
+//los límites de la escena y se establece ban en falso.
         spos[0]=obj->x()+2;
         spos[1]=obj->y();
         break;
     case 2:
+//Se recorre la lista pare2 y se verifica si hay alguna colisión entre el objeto obj y los elementos de la lista. Si se 
+//encuentra una colisión, se establece ban en falso.
         spos[0]=obj->x()-2;
         spos[1]=obj->y();
         break;
@@ -148,6 +175,8 @@ bool MainWindow::choque(short dest,QGraphicsPixmapItem *obj){
         ban=!(pare2[i].contacto(spos[0],spos[1],30,30));
     }
     if(spos[1]>266 && spos[1]<272)
+        //Si spos[1] está entre 266 y 272, se establece ban en verdadero. Esta comprobación parece ser una excepción 
+//específica en la lógica de colisión.
         ban=1;
     return ban;
 }
