@@ -28,9 +28,9 @@ public:
     ~MainWindow();
 
 private slots:
-    void mover_pac();
-    void refrescar();
-    void mover_fan1();
+    void mover_pac(); //funcion mover pacman
+    void refrescar(); 
+    void mover_fan1(); //funcion move fantasmas
 
 private:
     Ui::MainWindow *ui;
@@ -40,12 +40,12 @@ private:
     QVector <paredes> pare2;
     QVector <moneda> monedas;
     QVector <moneda>::iterator im;
-    void crear_fantas();
+    void crear_fantas(); //funcion crear fantasmas
     void mover_fan2(short destino,QGraphicsPixmapItem *obj);
     bool choque(short destino,QGraphicsPixmapItem *obj);
-    void cre_par();
-    void cre_mon();
-    void ganar();
+    void cre_par(); //funcion crear pacman
+    void cre_mon(); //funcion crear moneda
+    void ganar(); //funcion para ganar
     short estado=1,dest=0,mov_fan[4]={1,2,3,4},score=0;
 };
 #endif // MAINWINDOW_H
