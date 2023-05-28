@@ -1,8 +1,8 @@
 #include "moneda.h"
 
 void moneda::aparecer(int x1, int y2){ //metodo para mostrar moneda en la posicion que queremos
-    x=x1; //coordenada x
-    y=y2; //coordenada y
+    x=x1; //actualizamos posicion con coordenadas x especificas
+    y=y2; //actualizamos posicion con coordenadas y especificas
     mon= new QGraphicsPixmapItem; //creamos objeto
     mon->setPos(x,y); //le damos la posicion
     mon->setPixmap(QPixmap(":/new/prefix1/imagenes/moneda.png").scaled(5,5)); //cargamos la imagen y le damos 5x5 pixeles
