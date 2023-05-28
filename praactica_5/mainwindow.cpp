@@ -154,8 +154,7 @@ bool MainWindow::choque(short dest,QGraphicsPixmapItem *obj){ //Verifica si hay 
         spos[1]=obj->y();
         break;
     case 2:
-//Se recorre la lista pare2 y se verifica si hay alguna colisión entre el objeto obj y los elementos de la lista. Si se 
-//encuentra una colisión, se establece ban en falso.
+
         spos[0]=obj->x()-2;
         spos[1]=obj->y();
         break;
@@ -170,9 +169,13 @@ bool MainWindow::choque(short dest,QGraphicsPixmapItem *obj){ //Verifica si hay 
     }
     if(spos[0]<24 || spos[0]>570 || spos[1]<24 || spos[1]>560)
         ban=0;
+    //Se recorre la lista pare2 y se verifica si hay alguna colisión entre el objeto obj y los elementos de la lista. Si se 
+//encuentra una colisión, se establece ban en falso.
     for(int i=0;i<pare2.size();i++){
         if(!ban) break;
         ban=!(pare2[i].contacto(spos[0],spos[1],30,30));
+//Se recorre la lista pare2 y se verifica si hay alguna colisión entre el objeto obj y los elementos de la lista. 
+//Si se encuentra una colisión, se establece ban en falso.
     }
     if(spos[1]>266 && spos[1]<272)
         //Si spos[1] está entre 266 y 272, se establece ban en verdadero. Esta comprobación parece ser una excepción 
@@ -181,28 +184,33 @@ bool MainWindow::choque(short dest,QGraphicsPixmapItem *obj){ //Verifica si hay 
     return ban;
 }
 
-void MainWindow::crear_fantas(){
-    red=new QGraphicsPixmapItem;
-    pink=new QGraphicsPixmapItem;
-    blue=new QGraphicsPixmapItem;
-    yell=new QGraphicsPixmapItem;
-    red->setPos(254,278);
-    red->setPixmap(QPixmap(":/new/prefix1/imagenes/fanroj_1.png").scaled(30,30));
-    escena->addItem(red);
-    pink->setPos(284,278);
-    pink->setPixmap(QPixmap(":/new/prefix1/imagenes/fanros_1.png").scaled(30,30));
-    escena->addItem(pink);
-    blue->setPos(314,278);
-    blue->setPixmap(QPixmap(":/new/prefix1/imagenes/fanazu_1.png").scaled(30,30));
-    escena->addItem(blue);
-    yell->setPos(344,278);
-    yell->setPixmap(QPixmap(":/new/prefix1/imagenes/fanama_1.png").scaled(30,30));
-    escena->addItem(yell);
+void MainWindow::crear_fantas(){ // se encarga de crear los objetos gráficos de los fantasmas y agregarlos a la escena.
+    red=new QGraphicsPixmapItem; // crea instancia fanastma rojo
+    pink=new QGraphicsPixmapItem; //crea la instancia fantasma rosado
+    blue=new QGraphicsPixmapItem; //crea la isntancia fantasma azul
+    yell=new QGraphicsPixmapItem; //crea la instancia fantasma amarilo 
+    red->setPos(254,278); // asigna posicion al fnastama rojo
+    red->setPixmap(QPixmap(":/new/prefix1/imagenes/fanroj_1.png").scaled(30,30));//escala el fantasma rojo
+    escena->addItem(red); // agrega el fantasma rojo a la escena 
+    pink->setPos(284,278); // asigna posicion al fantasma  rosado
+    pink->setPixmap(QPixmap(":/new/prefix1/imagenes/fanros_1.png").scaled(30,30));//escala el fastasma rosado
+    escena->addItem(pink); //agrega fantasma rosado a la escena
+    blue->setPos(314,278); //asigna posicion al fantasma azul
+    blue->setPixmap(QPixmap(":/new/prefix1/imagenes/fanazu_1.png").scaled(30,30)); //escala el fantasma azul
+    escena->addItem(blue); //agrega el fantasma amarillo a la escena
+    yell->setPos(344,278); //asigna posicion al fantasma amarillo
+    yell->setPixmap(QPixmap(":/new/prefix1/imagenes/fanama_1.png").scaled(30,30)); //escala el fantasma amarillo
+    escena->addItem(yell); //añade el fnatasma amarillo en la escena
 }
 
-void MainWindow::mover_fan1(){
-    bool band=rand()%2;
+void MainWindow::mover_fan1(){ 
+    bool band=rand()%2;//se crean boolenaos aleatorios
     srand(time(NULL));
+//ara cada fantasma, se verifica si no hay una colisión en la dirección actual (mov_fan[i]) o si band es verdadero. 
+//En ese caso, se genera una nueva dirección aleatoria para el fantasma correspondiente (mov_fan[i] = 1 + rand() % 4).
+
+//A continuación, se llama a la función mover_fan2() para mover cada fantasma en su dirección correspondiente.
+//
     if(!choque(mov_fan[0],red) || band)
         mov_fan[0]=1+rand()%4;
     band=rand()%2;
@@ -221,6 +229,7 @@ void MainWindow::mover_fan1(){
 }
 
 void MainWindow::mover_fan2(short destino,QGraphicsPixmapItem *obj){
+//Se utiliza una estructura switch para determinar la dirección (destino) del movimiento del fantasma.
     switch(destino){
     case 1:
         if(choque(destino,obj))
@@ -239,58 +248,69 @@ void MainWindow::mover_fan2(short destino,QGraphicsPixmapItem *obj){
             obj->setY(obj->y()+2);
         break;
     }
-    if(obj->x()>600) obj->setX(-50);
-    else if(obj->x()==-50) obj->setX(600);
+//Después del movimiento, se realizan comprobaciones adicionales:
+
+
+    if(obj->x()>600) obj->setX(-50);//Si la posición x del objeto obj es mayor que 600, se establece la posición x en -50.
+    
+    else if(obj->x()==-50) obj->setX(600); //Si la posición x del objeto obj es igual a -50, se establece la posición x en 600.
 }
 
-void MainWindow::cre_mon(){
-    moneda a;
+void MainWindow::cre_mon(){ //Crea y coloca objetos de monedas en la escena del juego
+    moneda a; //crea instancia moneda
     int pos,i=0;
-    for(int j=0;j<200;j++)
+    for(int j=0;j<200;j++) //agrega 200 objetos al vector moenda
         monedas.push_back(a);
-    for(pos=40;pos<600;pos+=21){
-        if(pos<290 || pos>336){
-            monedas[i].aparecer(pos,42);
+    for(pos=40;pos<600;pos+=21){ //este bucle esta para organizar las monedas en diferentes posciones de la escena 
+        //se coloca en filas horizontales con una sepracion de 21 pixeles
+        if(pos<290 || pos>336){ 
+            monedas[i].aparecer(pos,42);//Primero, se colocan monedas en la primera fila (posición y = 42), excepto en el rango 
+            //de posiciones 290-336.
             escena->addItem(monedas[i].mon);
             i++;}}
     for(pos=40;pos<600;i++){
-        monedas[i].aparecer(pos,110);
+        monedas[i].aparecer(pos,110); //Luego, se colocan monedas en la segunda fila (posición y = 110) en incrementos de 21 píxeles.
         escena->addItem(monedas[i].mon);
         pos+=21;}
     for(pos=40;pos<600;pos+=21){
         if(!((pos>163 && pos<211) || (pos>285 && pos<343) || (pos>415 && pos<461))){
-            monedas[i].aparecer(pos,170);
+            monedas[i].aparecer(pos,170); //A continuación, se colocan monedas en la tercera fila (posición y = 170), excepto 
+            //en ciertos rangos de posiciones.
             escena->addItem(monedas[i].mon);
             i++;}}
     for(pos=40;pos<600;pos+=21){
         if(pos<290 || pos>336){
-            monedas[i].aparecer(pos,386);
+            monedas[i].aparecer(pos,386); //Se repiten estos pasos para las filas restantes (posiciones y = 386, 446, 506, 570).
             escena->addItem(monedas[i].mon);
             i++;}}
     for(pos=40;pos<600;pos+=21){
         if(!((pos>90 && pos<135) || (pos>475 && pos<530)||(pos>290 && pos<336))){
-            monedas[i].aparecer(pos,446);
+            monedas[i].aparecer(pos,446); //Se repiten estos pasos para las filas restantes (posiciones y = 386, 446, 506, 570).
             escena->addItem(monedas[i].mon);
             i++;}}
     for(pos=40;pos<600;pos+=21){
         if(!((pos>163 && pos<211) || (pos>285 && pos<343) || (pos>415 && pos<461))){
-            monedas[i].aparecer(pos,506);
+            monedas[i].aparecer(pos,506); //Se repiten estos pasos para las filas restantes (posiciones y = 386, 446, 506, 570).
             escena->addItem(monedas[i].mon);
             i++;}}
     for(pos=40;pos<600;i++){
-        monedas[i].aparecer(pos,570);
+        monedas[i].aparecer(pos,570); //Se repiten estos pasos para las filas restantes (posiciones y = 386, 446, 506, 570).
         escena->addItem(monedas[i].mon);
         pos+=21;}
-    for(pos=60;pos<500;pos+=21){
+    for(pos=60;pos<500;pos+=21){ //Se utiliza otro bucle for para colocar monedas en las columnas verticales con una 
+    //separación de 21 píxeles entre ellas.
         if(!((pos>96 && pos<130)||(pos>156 && pos<192)||(pos>362 && pos<408)||(pos>432 && pos<466))){
-            monedas[i].aparecer(147,pos);
+            monedas[i].aparecer(147,pos); //Primero, se colocan monedas en la columna izquierda (posición x = 147), excepto en 
+            //ciertos rangos de posiciones verticales
             escena->addItem(monedas[i].mon);
             i++;}}
     for(pos=60;pos<500;pos+=21){
         if(!((pos>96 && pos<130)||(pos>156 && pos<192)||(pos>362 && pos<408)||(pos>432 && pos<466))){
-            monedas[i].aparecer(470,pos);
+            monedas[i].aparecer(470,pos); //Luego, se colocan monedas en la columna derecha (posición x = 470), excepto en 
+            //ciertos rangos de posiciones verticales.
             escena->addItem(monedas[i].mon);
             i++;}}
+    //Se colocan monedas adicionales en posiciones específicas en la escena.
     monedas[i+1].aparecer(40,138);
     monedas[i+2].aparecer(218,138);
     monedas[i+3].aparecer(395,138);
@@ -307,13 +327,15 @@ void MainWindow::cre_mon(){
     monedas[i+14].aparecer(350,536);
     monedas[i+15].aparecer(267,536);
     for(int j=i+1;j<i+17;j++)
-        escena->addItem(monedas[j].mon);
+        escena->addItem(monedas[j].mon); //Finalmente, se agregan todas las monedas al escena utilizando el método addItem()
 }
 
 void MainWindow::cre_par(){
-    paredes a;
-    for(int i=0;i<36;i++)
+    paredes a; //se crea la instacia llamada paredes 
+    for(int i=0;i<36;i++) //Se utiliza un bucle for para agregar 36 objetos paredes al vector pare2.
         pare2.push_back(a);
+    //Se configura cada objeto paredes con las coordenadas y dimensiones correspondientes utilizando el método iniciar(). 
+    //Los parámetros de iniciar() representan respectivamente: x, y, ancho y alto de la pared.
     pare2[0].iniciar(60,60,72,36);
     pare2[1].iniciar(168,60,86,36);
     pare2[2].iniciar(290,24,46,72);
@@ -352,7 +374,7 @@ void MainWindow::cre_par(){
     pare2[35].iniciar(370,528,194,24);
 }
 
-void MainWindow::ganar(){
+void MainWindow::ganar(){ //En la función ganar(), se muestra un cuadro de diálogo QMessageBox con el mensaje "Ganaste".
     QMessageBox mensaje;
     mensaje.setText("Ganaste");
     mensaje.exec();
