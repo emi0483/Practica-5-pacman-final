@@ -99,7 +99,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event){ //Encargada de manipular los c
         pac->setRotation(0);
         dest=1;
     }
-    else if(event->key()==Qt::Key_A){ //Orienta hacia la derecha
+    else if(event->key()==Qt::Key_A){ //Orienta hacia la izquierda
         pac->setRotation(180);
         dest=2;
     }
